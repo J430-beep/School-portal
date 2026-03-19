@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Portal</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+body{background: linear-gradient(135deg,#1e3c72,#2a5298);color:white;}
+header{padding:20px;text-align:center;background:rgba(255,255,255,0.1);}
+.login-container{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin-top:30px;}
+.login-box{width:260px;background:rgba(255,255,255,0.1);padding:15px;border-radius:10px;}
+input{width:100%;padding:10px;margin:5px 0;border:none;border-radius:6px;}
+button{width:100%;padding:10px;background:#FFD700;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
+#dashboard{display:none;padding:20px;}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Nakurto Lukuny School Portal</h1>
+<p>Motto: Strive for Excellence</p>
+</header>
+
+<!-- LOGIN -->
+<div class="login-container">
+
+<div class="login-box">
+<h3>Class Teacher</h3>
+<input type="email" id="classEmail" placeholder="Email">
+<input type="password" id="classPass" placeholder="Password">
+<button onclick="login('class')">Login</button>
+</div>
+
+<div class="login-box">
+<h3>Other Teacher</h3>
+<input type="email" id="otherEmail" placeholder="Email">
+<input type="password" id="otherPass" placeholder="Password">
+<button onclick="login('other')">Login</button>
+</div>
+
+<div class="login-box">
+<h3>Deputy</h3>
+<input type="email" id="deputyEmail" placeholder="Email">
+<input type="password" id="deputyPass" placeholder="Password">
+<button onclick="login('deputy')">Login</button>
+</div>
+
+<div class="login-box">
+<h3>Headteacher</h3>
+<input type="email" id="headEmail" placeholder="Email">
+<input type="password" id="headPass" placeholder="Password">
+<button onclick="login('head')">Login</button>
+</div>
+
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+<h2>Welcome to Dashboard</h2>
+<p>Login successful ✅</p>
+<button onclick="logout()">Logout</button>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
+<script>
+
+// ✅ YOUR FIXED CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCsBJ92w-pxJFcABW8iSgPTCNM15dy6mv8",
+  authDomain: "school-system-46781.firebaseapp.com",
+  projectId: "school-system-46781",
+  storageBucket: "school-system-46781.appspot.com", // FIXED
+  messagingSenderId: "219101990467",
+  appId: "1:219101990467:web:58a615dfecd17ec16b8ef6",
+  measurementId: "G-4ZPJ8KZW2N"
+};
+
+// ✅ Initialize
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ✅ LOGIN FUNCTION (WORKING)
+function login(role){
+
+let email = "";
+let password = "";
+
+if(role==="class"){
+email = document.getElementById("classEmail").value.trim();
+password = document.getElementById("classPass").value.trim();
+}
+else if(role==="other"){
+email = document.getElementById("otherEmail").value.trim();
+password = document.getElementById("otherPass").value.trim();
+}
+else if(role==="deputy"){
+email = document.getElementById("deputyEmail").value.trim();
+password = document.getElementById("deputyPass").value.trim();
+}
+else{
+email = document.getElementById("headEmail").value.trim();
+password = document.getElementById("headPass").value.trim();
+}
+
+// validation
+if(!email || !password){
+alert("Enter email and password");
+return;
+}
+
+// login
+auth.signInWithEmailAndPassword(email,password)
+.then(()=>{
+alert("Login successful");
+
+// show dashboard
+document.querySelector(".login-container").style.display="none";
+document.getElementById("dashboard").style.display="block";
+
+})
+.catch(err=>{
+alert("Error: "+err.message);
+console.log(err);
+});
+
+}
+
+// ✅ LOGOUT
+function logout(){
+auth.signOut().then(()=>{
+alert("Logged out");
+location.reload();
+});
+}
+
+// ✅ AUTO LOGIN (VERY IMPORTANT)
+auth.onAuthStateChanged(user=>{
+if(user){
+document.querySelector(".login-container").style.display="none";
+document.getElementById("dashboard").style.display="block";
+}
+});
+
+</script>
+
+</body>
+</html>
